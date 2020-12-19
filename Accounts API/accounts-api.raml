@@ -1,0 +1,77 @@
+#%RAML 1.0
+title: Accounts API
+description: This is the customer accounts system api
+types:
+  Accounts: !include datatypes/AccountsDataType.raml
+
+
+/accounts:
+  get:
+    description: This method retrieves all account data
+    headers:
+      Requester-ID:
+        description: identify the person making account requests
+        required: true
+        
+    queryParameters:
+      type:
+        displayName: Acount Type 
+        description: Returns records that match's the account type     
+        required: true
+        enum:
+          - personal
+          - business
+      name:
+        displayName: Account Owner Name
+        description: name of the account owner
+        required: false
+      country:
+        displayName: Account Owner Country
+        description: country of residence
+        required: false
+
+    responses:
+      200:
+        description: success
+        body:
+          application/json:
+            type: Accounts[]
+            examples:
+              output: !include examples/AccountsExample.raml
+
+      400:
+        body:
+          application/json:
+            example:
+              message: Error fetching data from database Accounts
+
+
+
+  post:
+    displayName: New Account
+    description: This method accepts an array of Account objects
+    headers:
+      Requester-ID:
+        description: identify the person making account requests
+        required: true
+    body:
+       application/json:
+         type: Accounts[]
+         examples:
+          input: !include examples/AccountsNoIDExample.raml
+    responses:
+      201:
+        description: success
+        body:
+          application/json:
+            example:
+              message: Accounts created (but not really)
+      400:
+        body:
+          application/json:
+             example:
+               message: Error adding accounts.  invalid JSON object.
+                                                      
+         
+        
+    
